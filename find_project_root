@@ -10,9 +10,14 @@ names=$(join_by ' -o -name ' "${FILE_NAMES[@]}")
 
 while [[ $PWD != / ]] ; do
   project_dir=( $(find "$PWD"/ -maxdepth 1 -name $names) )
-  project_dir="${project_dir[0]}"
   if ! [ -z "$project_dir" ]
   then
+    if [ ! -d "$project_dir" ]
+    then
+      project_dir=`dirname "${project_dir[0]}"`
+    else
+      project_dir="${project_dir[0]}"
+    fi
     cd $project_dir/..
     OLDPWD=$START_PATH
     break
