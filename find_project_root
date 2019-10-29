@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+START_PATH=$PWD
+FILE_NAMES=('.git' 'venv' 'pom.xml', 'README.md')
+
+function join_by { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
+
+names=$(join_by ' -o -name ' "${FILE_NAMES[@]}")
+
+while [[ $PWD != / ]] ; do
+  project_dir=( $(find "$PWD"/ -maxdepth 1 -name $names) )
+  project_dir="${project_dir[0]}"
+  if ! [ -z "$project_dir" ]
+  then
+    cd $project_dir/..
+    OLDPWD=$START_PATH
+    break
+  fi
+  cd ..
+done
+
+if [ -z "$project_dir" ]
+then
+  echo "/bin/bash"
+else
+  title="$(basename $(dirname $project_dir))"
+  echo $title
+fi
