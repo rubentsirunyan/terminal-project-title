@@ -24,6 +24,11 @@ if [ -z "$project_dir" ]
 then
   echo "/bin/bash"
 else
-  title="$(basename $(dirname $project_dir))"
+  if [ -d .git ]; then
+    branch=`git branch | grep \* | cut -d ' ' -f2`;
+    title="$(basename $(dirname $project_dir)) | $branch"
+  else
+    title="$(basename $(dirname $project_dir))"
+  fi
   echo $title
 fi
